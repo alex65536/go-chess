@@ -138,6 +138,8 @@ func (c cmdGo) Serialize() string {
 	if c.opts.Infinite {
 		_, _ = b.WriteString(" infinite")
 	}
+	// "searchmoves" must always be the last option. Otherwise, some engines (e.g. stockfish) do
+	// not parse it properly.
 	if len(c.opts.SearchMoves) != 0 {
 		_, _ = b.WriteString(" searchmoves")
 		for _, m := range c.opts.SearchMoves {
