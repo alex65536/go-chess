@@ -107,13 +107,6 @@ func (c cmdGo) uciCommandMarker() {}
 func (c cmdGo) Serialize() string {
 	var b strings.Builder
 	_, _ = b.WriteString("go")
-	if len(c.opts.SearchMoves) != 0 {
-		_, _ = b.WriteString(" searchmoves")
-		for _, m := range c.opts.SearchMoves {
-			_ = b.WriteByte(' ')
-			_, _ = b.WriteString(m.UCI())
-		}
-	}
 	if c.opts.Ponder {
 		_, _ = b.WriteString(" ponder")
 	}
@@ -144,6 +137,13 @@ func (c cmdGo) Serialize() string {
 	}
 	if c.opts.Infinite {
 		_, _ = b.WriteString(" infinite")
+	}
+	if len(c.opts.SearchMoves) != 0 {
+		_, _ = b.WriteString(" searchmoves")
+		for _, m := range c.opts.SearchMoves {
+			_ = b.WriteByte(' ')
+			_, _ = b.WriteString(m.UCI())
+		}
 	}
 	return b.String()
 }
