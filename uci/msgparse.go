@@ -266,15 +266,26 @@ func parseInfo(tok *tokenizer, l Logger) (Info, error) {
 			return nil
 		}
 
-		parsePermille := func(target *maybe.Maybe[float64]) error {
+		doParsePermille := func() (float64, error) {
 			n, err := doParseInt64(64)
+			if err != nil {
+				return 0.0, err
+			}
+			if n > 1000 {
+				return 0.0, fmt.Errorf("permille value too large: %v", n)
+			}
+			if n < 0 {
+				return 0.0, fmt.Errorf("permille value too small: %v", n)
+			}
+			return float64(n) / 1000.0, nil
+		}
+
+		parsePermille := func(target *maybe.Maybe[float64]) error {
+			p, err := doParsePermille()
 			if err != nil {
 				return err
 			}
-			if n > 1000 {
-				return fmt.Errorf("permille value too large: %v", n)
-			}
-			*target = maybe.Some(float64(n) / 1000.0)
+			*target = maybe.Some(p)
 			return nil
 		}
 
@@ -384,6 +395,24 @@ func parseInfo(tok *tokenizer, l Logger) (Info, error) {
 			return nil
 		}
 
+		parseWDL := func(target *maybe.Maybe[WDL]) error {
+			var (
+				wdl WDL
+				err error
+			)
+			if wdl.Win, err = doParsePermille(); err != nil {
+				return fmt.Errorf("parse win: %w", err)
+			}
+			if wdl.Draw, err = doParsePermille(); err != nil {
+				return fmt.Errorf("parse draw: %w", err)
+			}
+			if wdl.Loss, err = doParsePermille(); err != nil {
+				return fmt.Errorf("parse loss: %w", err)
+			}
+			*target = maybe.Some(wdl)
+			return nil
+		}
+
 		var err error
 		switch kw {
 		case "depth":
@@ -421,6 +450,8 @@ func parseInfo(tok *tokenizer, l Logger) (Info, error) {
 			err = parseMoves(&info.Refutation)
 		case "currline":
 			err = parseCurrLine(&info.CurLine, &info.CurLineCPU)
+		case "wdl":
+			err = parseWDL(&info.WDL)
 		default:
 			err = fmt.Errorf("bad keyword")
 		}

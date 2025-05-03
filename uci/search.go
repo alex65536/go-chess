@@ -82,6 +82,12 @@ func (g GoOptions) Validate(b *chess.Board) error {
 	return nil
 }
 
+type WDL struct {
+	Win  float64
+	Draw float64
+	Loss float64
+}
+
 type Info struct {
 	Depth         maybe.Maybe[int]
 	Seldepth      maybe.Maybe[int]
@@ -101,6 +107,7 @@ type Info struct {
 	Refutation    []chess.UCIMove
 	CurLine       []chess.UCIMove
 	CurLineCPU    maybe.Maybe[int]
+	WDL           maybe.Maybe[WDL]
 }
 
 type SearchStatus struct {
@@ -111,6 +118,7 @@ type SearchStatus struct {
 	Score    maybe.Maybe[Score]
 	HashFull maybe.Maybe[float64]
 	NPS      int64
+	WDL      maybe.Maybe[WDL]
 }
 
 func (s SearchStatus) Clone() SearchStatus {
@@ -189,6 +197,9 @@ func (s *searchState) OnInfo(info Info, strOnly bool) error {
 	}
 	if h, ok := info.HashFull.TryGet(); ok {
 		s.s.HashFull = maybe.Some(h)
+	}
+	if wdl, ok := info.WDL.TryGet(); ok {
+		s.s.WDL = maybe.Some(wdl)
 	}
 	return nil
 }
