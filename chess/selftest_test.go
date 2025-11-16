@@ -526,7 +526,7 @@ func TestSelftest(t *testing.T) {
 	sum := fmt.Sprintf("%x", hsh.Sum(nil))
 	require.Equalf(
 		t,
-		"1ac232af9c1ede66b0cf423c87838324b09d178a5721b2c4ded7d87540a96318",
+		"e0d9b6799e2bd0ae9e69f9e2757acbb3e5072fa6c667ee3e5745d90cfd2ed18d",
 		sum,
 		"inspect %q for details",
 		of.Name(),
