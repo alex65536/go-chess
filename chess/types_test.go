@@ -53,6 +53,23 @@ func TestCoord(t *testing.T) {
 	}
 }
 
+func TestCoordFlip(t *testing.T) {
+	c2 := CoordFromParts(FileC, Rank2)
+	c7 := CoordFromParts(FileC, Rank7)
+	f2 := CoordFromParts(FileF, Rank2)
+	f7 := CoordFromParts(FileF, Rank7)
+
+	assert.Equal(t, c7, c2.FlippedRank())
+	assert.Equal(t, c2, c7.FlippedRank())
+	assert.Equal(t, f7, f2.FlippedRank())
+	assert.Equal(t, f2, f7.FlippedRank())
+
+	assert.Equal(t, f2, c2.FlippedFile())
+	assert.Equal(t, f7, c7.FlippedFile())
+	assert.Equal(t, c2, f2.FlippedFile())
+	assert.Equal(t, c7, f7.FlippedFile())
+}
+
 func TestCell(t *testing.T) {
 	var used [CellMax]bool
 

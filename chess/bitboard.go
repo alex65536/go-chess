@@ -70,6 +70,16 @@ func (b Bitboard) IsEmpty() bool {
 	return b == BbEmpty
 }
 
+func (b Bitboard) FlippedRank() Bitboard {
+	return Bitboard(bits.ReverseBytes64(uint64(b)))
+}
+
+func (b Bitboard) FlippedFile() Bitboard {
+	return Bitboard(
+		bits.ReverseBytes64(
+			bits.Reverse64(uint64(b))))
+}
+
 func (b Bitboard) String() string {
 	v := bits.Reverse64(uint64(b))
 	return fmt.Sprintf(

@@ -120,6 +120,14 @@ func (c Coord) Shift(d CoordDelta) MaybeCoord {
 	return SomeCoord(CoordFromParts(File(newFile), Rank(newRank)))
 }
 
+func (c Coord) FlippedRank() Coord {
+	return Coord(c ^ 56)
+}
+
+func (c Coord) FlippedFile() Coord {
+	return Coord(c ^ 7)
+}
+
 func (c Coord) String() string {
 	var b strings.Builder
 	_ = b.WriteByte(c.File().ToByte())
